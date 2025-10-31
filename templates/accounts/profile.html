@@ -27,6 +27,12 @@
                         {% endif %}
                     </div>
                 </div>
+                <div class="flex sm:flex-row flex-col gap-3 sm:items-center">
+                    <a href="{% url 'accounts:edit_profile' %}"
+                       class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Edit Profile
+                    </a>
+                </div>
             </div>
 
             {% if profile.bio or profile.location %}

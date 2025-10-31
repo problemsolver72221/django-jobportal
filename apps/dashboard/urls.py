@@ -13,6 +13,11 @@ urlpatterns = [
         name="edit_application",
     ),
     path(
+        "application/<int:application_id>/manage/",
+        views.manage_application,
+        name="manage_application",
+    ),
+    path(
         "application/<int:application_id>/withdraw/",
         views.withdraw_application,
         name="withdraw_application",

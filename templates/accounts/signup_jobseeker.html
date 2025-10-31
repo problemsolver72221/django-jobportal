@@ -28,7 +28,9 @@
             </ul>
         </div>
         
-        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        <div id="jobseeker-form-errors" class="hidden mb-4 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md"></div>
+
+        <form method="POST" enctype="multipart/form-data" class="space-y-6" data-validate="signup-jobseeker" data-error-target="jobseeker-form-errors" data-reset-on-reload="true">
             {% csrf_token %}
             {% if form.non_field_errors %}
             <div class="text-red-500 text-sm">

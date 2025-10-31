@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .forms import EmployerSignUpForm, JobSeekerSignUpForm
+from .forms import EmployerSignUpForm, JobSeekerSignUpForm, ProfileForm
 from .models import CustomUser, JobSeeker, Employer, Profile
 from apps.jobs.models import Application
 
@@ -24,6 +24,7 @@ def login_view(request):
         password = request.POST.get("password")
         user_type = request.POST.get("user_type", "job_seeker")
         remember = "remember" in request.POST
+        resolved_type = None
 
         try:
             user = CustomUser.objects.get(
@@ -32,15 +33,31 @@ def login_view(request):
         except CustomUser.DoesNotExist:
             messages.error(request, "No account found with these credentials.")
         else:
-            if user_type == "job_seeker" and not user.is_job_seeker:
+            available_roles = []
+            if user.is_job_seeker:
+                available_roles.append("job_seeker")
+            if user.is_employer:
+                available_roles.append("employer")
+
+            resolved_type = user_type
+
+            if not available_roles:
                 messages.error(
-                    request, "Please select the correct user type (Job Seeker)."
+                    request,
+                    "This account has no assigned role. Please contact support.",
                 )
-            elif user_type == "employer" and not user.is_employer:
-                messages.error(
-                    request, "Please select the correct user type (Employer)."
-                )
-            else:
+                resolved_type = None
+            elif resolved_type not in available_roles:
+                if len(available_roles) == 1:
+                    resolved_type = available_roles[0]
+                else:
+                    messages.error(
+                        request,
+                        "Please select the correct user type before signing in.",
+                    )
+                    resolved_type = None
+
+            if resolved_type:
                 authenticated_user = authenticate(
                     request, username=user.username, password=password
                 )
@@ -49,7 +66,7 @@ def login_view(request):
                     if not remember:
                         request.session.set_expiry(0)
                     messages.success(request, f"Welcome back, {user.username}!")
-                    if user.is_employer:
+                    if resolved_type == "employer":
                         return redirect("dashboard:employer_dashboard")
                     return redirect("dashboard:jobseeker_dashboard")
                 messages.error(request, "Invalid password.")
@@ -158,6 +175,22 @@ def user_profile(request):
         "skills": skills,
     }
     return render(request, "accounts/profile.html", context)
+
+
+@login_required
+def edit_profile(request):
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("accounts:user_profile")
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, "accounts/profile_edit.html", {"form": form})
 
 
 @login_required

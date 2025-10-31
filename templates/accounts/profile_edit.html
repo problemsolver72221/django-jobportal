@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="bg-gray-100 py-16">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-900">Edit Profile</h1>
+                    <p class="text-sm text-gray-500">Update the details everyone sees on your public profile.</p>
+                </div>
+                <a href="{% url 'accounts:user_profile' %}" class="text-sm text-blue-600 hover:text-blue-700">
+                    Cancel
+                </a>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="text-red-500 text-sm">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% if field.errors %}
+                            <div class="text-red-500 text-sm mt-1">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit"
+                        class="w-full py-3 px-4 rounded-lg text-white text-sm font-medium
+                               bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500
+                               hover:from-blue-600 hover:via-purple-600 hover:to-pink-600
+                               transform hover:scale-[1.02] transition-all duration-200
+                               hover:shadow-lg hover:shadow-blue-500/25">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

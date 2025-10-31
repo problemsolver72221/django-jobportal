@@ -17,15 +17,9 @@
             </h2>
         </div>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+        <div id="login-errors" class="hidden mb-4 bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-md"></div>
 
-        <form method="POST" class="space-y-6">
+        <form method="POST" class="space-y-6" data-validate="login" data-error-target="login-errors" data-reset-on-reload="true" autocomplete="off">
             {% csrf_token %}
             
             <!-- User Type Selection -->
@@ -49,7 +43,7 @@
                 <label for="username_or_email" class="block text-sm font-medium text-gray-700">
                     Username or Email
                 </label>
-                <input type="text" id="username_or_email" name="username_or_email" required
+                <input type="text" id="username_or_email" name="username_or_email" required autocomplete="off"
                        value="{{ form_data.username_or_email|default:'' }}"
                        class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm
                               focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all
@@ -61,7 +55,7 @@
                 <label for="password" class="block text-sm font-medium text-gray-700">
                     Password
                 </label>
-                <input type="password" id="password" name="password" required
+                <input type="password" id="password" name="password" required autocomplete="new-password"
                        class="mt-1 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-sm
                               focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all
                               hover:border-blue-400">
