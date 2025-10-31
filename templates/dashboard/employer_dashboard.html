@@ -81,7 +81,11 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="text-sm font-medium text-gray-900">
-                                        {{ application.job_seeker.user.get_full_name }}
+                                        {% if application.job_seeker.user.first_name or application.job_seeker.user.last_name %}
+                                            {{ application.job_seeker.user.get_full_name }}
+                                        {% else %}
+                                            {{ application.job_seeker.user.username }}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </td>
