@@ -80,7 +80,11 @@ def job_detail(request, job_id):
 @login_required
 def post_job(request):
     if not hasattr(request.user, "employer"):
-        return redirect("home")
+        messages.error(
+            request,
+            "You need an employer account to post jobs. Switch to an employer profile first.",
+        )
+        return redirect("accounts:employer_signup")
 
     if request.method == "POST":
         form = JobPostForm(request.POST)

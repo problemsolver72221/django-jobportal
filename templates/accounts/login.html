@@ -21,6 +21,7 @@
 
         <form method="POST" class="space-y-6" data-validate="login" data-error-target="login-errors" data-reset-on-reload="true" autocomplete="off">
             {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
             
             <!-- User Type Selection -->
             {% with selected_type=form_data.user_type|default:'job_seeker' %}

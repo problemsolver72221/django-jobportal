@@ -28,6 +28,14 @@
                 <p class="text-white/80">
                     Sign up as a job seeker or employer to access all features and start your journey.
                 </p>
+                <div class="mt-6">
+                    <a href="{% url 'accounts:signup' %}"
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-900 bg-white rounded-lg shadow-sm
+                              hover:bg-indigo-100 transition-all duration-200">
+                        Create account
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Search Jobs -->
@@ -43,6 +51,14 @@
                 <p class="text-white/80">
                     Browse through our extensive job listings and use filters to find the perfect position.
                 </p>
+                <div class="mt-6">
+                    <a href="{% url 'jobs:job_list' %}"
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-900 bg-white rounded-lg shadow-sm
+                              hover:bg-indigo-100 transition-all duration-200">
+                        Start searching
+                        <i class="fas fa-search ml-2"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Apply for Jobs -->
@@ -58,6 +74,14 @@
                 <p class="text-white/80">
                     Submit your application with resume and cover letter. Track your applications in dashboard.
                 </p>
+                <div class="mt-6">
+                    <a href="{% url 'accounts:login' %}?next={% url 'jobs:job_list' %}"
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-900 bg-white rounded-lg shadow-sm
+                              hover:bg-indigo-100 transition-all duration-200">
+                        Sign in to apply
+                        <i class="fas fa-paper-plane ml-2"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Get Hired -->
@@ -73,6 +97,14 @@
                 <p class="text-white/80">
                     Get notified when employers respond and prepare for your new career opportunity.
                 </p>
+                <div class="mt-6">
+                    <a href="{% url 'dashboard:jobseeker_dashboard' %}"
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-indigo-900 bg-white rounded-lg shadow-sm
+                              hover:bg-indigo-100 transition-all duration-200">
+                        Go to dashboard
+                        <i class="fas fa-check ml-2"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

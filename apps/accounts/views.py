@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.http import url_has_allowed_host_and_scheme
 from .forms import EmployerSignUpForm, JobSeekerSignUpForm, ProfileForm
 from .models import CustomUser, JobSeeker, Employer, Profile
 from apps.jobs.models import Application
@@ -17,6 +19,7 @@ def login_view(request):
         "username_or_email": "",
         "remember": False,
     }
+    next_url = request.POST.get("next") or request.GET.get("next", "")
     form_data = request.session.pop(session_key, default_form_data)
 
     if request.method == "POST":
@@ -66,9 +69,22 @@ def login_view(request):
                     if not remember:
                         request.session.set_expiry(0)
                     messages.success(request, f"Welcome back, {user.username}!")
+                    allowed_hosts = {request.get_host()}
+                    if settings.ALLOWED_HOSTS:
+                        allowed_hosts.update(settings.ALLOWED_HOSTS)
+                    safe_next = (
+                        next_url
+                        if next_url
+                        and url_has_allowed_host_and_scheme(
+                            next_url,
+                            allowed_hosts=allowed_hosts,
+                            require_https=request.is_secure(),
+                        )
+                        else None
+                    )
                     if resolved_type == "employer":
-                        return redirect("dashboard:employer_dashboard")
-                    return redirect("dashboard:jobseeker_dashboard")
+                        return redirect(safe_next or "dashboard:employer_dashboard")
+                    return redirect(safe_next or "dashboard:jobseeker_dashboard")
                 messages.error(request, "Invalid password.")
 
         request.session[session_key] = {
@@ -78,7 +94,11 @@ def login_view(request):
         }
         return redirect("accounts:login")
 
-    return render(request, "accounts/login.html", {"form_data": form_data})
+    return render(
+        request,
+        "accounts/login.html",
+        {"form_data": form_data, "next": next_url},
+    )
 
 
 def logout_view(request):
